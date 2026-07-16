@@ -1,61 +1,61 @@
 /**
  * buscador.js — Baterías a Domicilio Medellín
  * ─────────────────────────────────────────────────────────────────
- * Lógica del buscador automático de baterías.
+ * Buscador en cascada de 3 pasos:
  *
- * FLUJO:
- *   1. Al cargar la página → fetch catalogo.json → llenar <select> marcas
- *   2. Usuario elige marca  → filtrar modelos → llenar <select> modelos
- *   3. Usuario elige modelo → habilitar botón "Consultar batería"
- *   4. Usuario pulsa botón  → buscar en JSON → mostrar card resultado
- *                           → actualizar link WhatsApp con mensaje pre-cargado
+ *   PASO 1 → Usuario elige MARCA
+ *              → Se calculan los AÑOS disponibles para esa marca
+ *   PASO 2 → Usuario elige AÑO
+ *              → Se filtran los MODELOS que cubren ese año
+ *   PASO 3 → Usuario elige MODELO
+ *              → Se habilita el botón "Consultar batería"
+ *   PASO 4 → Click en botón → Se muestra la batería recomendada
+ *              → Aparece campo dirección + botón ¡DOMICILIO YA!
  *
  * IDs del HTML que usa este script:
- *   #sel-marca           → <select> de marcas
- *   #sel-modelo          → <select> de modelos (empieza disabled)
- *   #btn-buscar          → botón "Consultar batería" (empieza disabled)
- *   #resultado-bateria   → <section> del card de resultado (empieza hidden)
- *   #res-referencia      → <h3> donde va la referencia de la batería
- *   #res-precio          → <p> donde va el precio formateado
- *   #btn-whatsapp-buscador → <a> botón ¡Domicilio Ya! con href a WhatsApp
+ *   #sel-marca     → <select> marcas
+ *   #sel-anio      → <select> años  (empieza disabled)
+ *   #sel-modelo    → <select> modelos (empieza disabled)
+ *   #btn-buscar    → botón "Consultar batería" (empieza disabled)
+ *   #resultado-bateria   → sección resultado (empieza hidden)
+ *   #res-referencia      → <h3> referencia de la batería
+ *   #res-precio          → <p> precio formateado
+ *   #btn-whatsapp-buscador → botón ¡Domicilio Ya!
+ *   #res-direccion       → input de dirección
  *
  * Variable global requerida (definida en index.html):
- *   window.WA_NUMERO     → número WhatsApp sin '+' ni espacios, ej: '573001234567'
+ *   window.WA_NUMERO → número WhatsApp sin '+', ej: '573022949358'
  */
 
 (function () {
   'use strict';
 
-  /* ── Referencias a los elementos del DOM ─────────────────────── */
+  /* ── Referencias DOM ───────────────────────────────────────────── */
   var selMarca  = document.getElementById('sel-marca');
+  var selAnio   = document.getElementById('sel-anio');
   var selModelo = document.getElementById('sel-modelo');
   var btnBuscar = document.getElementById('btn-buscar');
 
-  /* El catálogo completo, se llena cuando llega el JSON */
+  /* Catálogo completo cargado desde JSON */
   var catalogo = [];
 
   /* ══════════════════════════════════════════════════════════════
-     PASO 1 — CARGAR EL CATÁLOGO
+     PASO 0 — CARGAR EL CATÁLOGO
      fetch() descarga el JSON una sola vez al cargar la página.
-     .then() espera la respuesta y convierte el texto en objeto JS.
   ══════════════════════════════════════════════════════════════ */
   fetch('data/catalogo.json')
-    .then(function (respuesta) {
-      return respuesta.json();         /* convierte texto → array de objetos */
-    })
+    .then(function (res) { return res.json(); })
     .then(function (datos) {
-      catalogo = datos;                /* guardamos los 1800 registros */
-      llenarMarcas();                  /* ya podemos poblar el primer select */
+      catalogo = datos;
+      llenarMarcas();
     })
-    .catch(function (error) {
-      console.error('[Buscador] Error cargando catálogo:', error);
+    .catch(function (err) {
+      console.error('[Buscador] Error cargando catálogo:', err);
     });
 
 
   /* ══════════════════════════════════════════════════════════════
-     PASO 2 — LLENAR EL SELECT DE MARCAS
-     Recorremos el array y recopilamos marcas únicas en orden A–Z.
-     Usamos un objeto {marca: true} como "set" para evitar duplicados.
+     PASO 1 — LLENAR MARCAS (A–Z, únicas)
   ══════════════════════════════════════════════════════════════ */
   function llenarMarcas() {
     var vistas = {};
@@ -63,88 +63,141 @@
 
     for (var i = 0; i < catalogo.length; i++) {
       var m = catalogo[i].marca;
-      if (!vistas[m]) {
+      if (m && !vistas[m]) {
         vistas[m] = true;
         marcas.push(m);
       }
     }
-    marcas.sort(); /* A–Z */
+    marcas.sort();
 
-    /* Creamos todas las <option> de una vez con un DocumentFragment
-       para no refluir el DOM en cada iteración (más rápido) */
-    var fragmento = document.createDocumentFragment();
-
-    var opDefault = document.createElement('option');
-    opDefault.value = '';
-    opDefault.textContent = '— Selecciona marca —';
-    fragmento.appendChild(opDefault);
+    var frag = document.createDocumentFragment();
+    var opD  = document.createElement('option');
+    opD.value = '';
+    opD.textContent = '— Selecciona la marca —';
+    frag.appendChild(opD);
 
     for (var j = 0; j < marcas.length; j++) {
       var op = document.createElement('option');
-      op.value       = marcas[j];
-      op.textContent = marcas[j];
-      fragmento.appendChild(op);
+      op.value = op.textContent = marcas[j];
+      frag.appendChild(op);
     }
 
-    selMarca.innerHTML = '';           /* limpiar opción inicial del HTML */
-    selMarca.appendChild(fragmento);
+    selMarca.innerHTML = '';
+    selMarca.appendChild(frag);
   }
 
 
   /* ══════════════════════════════════════════════════════════════
-     PASO 3 — AL CAMBIAR MARCA → LLENAR MODELOS
-     Escuchamos el evento 'change' del primer select.
-     Filtramos el catálogo por la marca elegida y poblamos el segundo.
+     EVENTO: cambio de MARCA → calcular años disponibles
+     Para cada registro de esa marca, expandimos el rango
+     [anioDesde … anioHasta] y recopilamos años únicos ordenados.
   ══════════════════════════════════════════════════════════════ */
   selMarca.addEventListener('change', function () {
-    var marcaSel = selMarca.value;
-
-    /* Resetear el segundo select y el botón */
-    reiniciarModelo();
+    resetAnio();
+    resetModelo();
     ocultarResultado();
 
-    if (!marcaSel) return; /* el usuario eligió la opción vacía */
+    var marca = selMarca.value;
+    if (!marca) return;
 
-    /* Filtrar modelos únicos para esa marca */
-    var vistos  = {};
-    var modelos = [];
-
+    /* Recopilar todos los años únicos de esa marca */
+    var añosSet = {};
     for (var i = 0; i < catalogo.length; i++) {
-      if (catalogo[i].marca === marcaSel) {
-        var mod = catalogo[i].modelo;
-        if (!vistos[mod]) {
-          vistos[mod] = true;
-          modelos.push(mod);
-        }
+      var r = catalogo[i];
+      if (r.marca !== marca) continue;
+
+      var desde = parseInt(r.anioDesde, 10);
+      var hasta = parseInt(r.anioHasta, 10);
+
+      if (isNaN(desde) || isNaN(hasta)) continue;
+
+      for (var a = desde; a <= hasta; a++) {
+        añosSet[a] = true;
       }
     }
-    modelos.sort(); /* A–Z */
 
-    /* Poblar el select de modelos */
-    var fragmento = document.createDocumentFragment();
+    var años = Object.keys(añosSet)
+                     .map(Number)
+                     .sort(function (a, b) { return a - b; });
 
-    var opDefault = document.createElement('option');
-    opDefault.value = '';
-    opDefault.textContent = '— Selecciona modelo —';
-    fragmento.appendChild(opDefault);
+    if (años.length === 0) return;
 
-    for (var j = 0; j < modelos.length; j++) {
+    var frag = document.createDocumentFragment();
+    var opD  = document.createElement('option');
+    opD.value = '';
+    opD.textContent = '— Selecciona el año —';
+    frag.appendChild(opD);
+
+    for (var j = 0; j < años.length; j++) {
       var op = document.createElement('option');
-      op.value       = modelos[j];
-      op.textContent = modelos[j];
-      fragmento.appendChild(op);
+      op.value = op.textContent = String(años[j]);
+      frag.appendChild(op);
     }
 
-    selModelo.innerHTML = '';
-    selModelo.appendChild(fragmento);
-    selModelo.disabled = false;        /* ahora el usuario puede elegir modelo */
+    selAnio.innerHTML = '';
+    selAnio.appendChild(frag);
+    selAnio.disabled = false;
   });
 
 
   /* ══════════════════════════════════════════════════════════════
-     PASO 4 — AL CAMBIAR MODELO → HABILITAR BOTÓN
-     Solo habilitamos el botón si el usuario eligió un modelo real
-     (no la opción vacía "— Selecciona modelo —").
+     EVENTO: cambio de AÑO → filtrar modelos que cubren ese año
+     Un modelo aplica si anioDesde ≤ añoElegido ≤ anioHasta
+  ══════════════════════════════════════════════════════════════ */
+  selAnio.addEventListener('change', function () {
+    resetModelo();
+    ocultarResultado();
+
+    var marca = selMarca.value;
+    var año   = parseInt(selAnio.value, 10);
+    if (!marca || isNaN(año)) return;
+
+    /* Filtrar registros compatibles con marca + año */
+    var vistos  = {};
+    var modelos = [];
+
+    for (var i = 0; i < catalogo.length; i++) {
+      var r = catalogo[i];
+      if (r.marca !== marca) continue;
+
+      var desde = parseInt(r.anioDesde, 10);
+      var hasta = parseInt(r.anioHasta, 10);
+      if (isNaN(desde) || isNaN(hasta)) continue;
+
+      if (año >= desde && año <= hasta) {
+        /* La clave para deduplicar es modelo + cilindraje */
+        var clave = r.modelo + '|' + r.cilindraje;
+        if (!vistos[clave]) {
+          vistos[clave] = true;
+          modelos.push(r.modelo + (r.cilindraje ? ' ' + r.cilindraje : ''));
+        }
+      }
+    }
+
+    modelos.sort();
+
+    if (modelos.length === 0) return;
+
+    var frag = document.createDocumentFragment();
+    var opD  = document.createElement('option');
+    opD.value = '';
+    opD.textContent = '— Selecciona el modelo —';
+    frag.appendChild(opD);
+
+    for (var j = 0; j < modelos.length; j++) {
+      var op = document.createElement('option');
+      op.value = op.textContent = modelos[j];
+      frag.appendChild(op);
+    }
+
+    selModelo.innerHTML = '';
+    selModelo.appendChild(frag);
+    selModelo.disabled = false;
+  });
+
+
+  /* ══════════════════════════════════════════════════════════════
+     EVENTO: cambio de MODELO → habilitar botón Consultar
   ══════════════════════════════════════════════════════════════ */
   selModelo.addEventListener('change', function () {
     btnBuscar.disabled = !selModelo.value;
@@ -153,55 +206,54 @@
 
 
   /* ══════════════════════════════════════════════════════════════
-     PASO 5 — AL HACER CLICK EN "Consultar batería"
-     Buscamos la primera coincidencia marca+modelo en el catálogo.
-     (Puede haber varios registros con mismo marca+modelo pero diferente
-      cilindraje o año — tomamos el primero, que tiene la misma referencia.)
+     EVENTO: click en "Consultar batería"
+     Busca la primera coincidencia por marca + año + modelo.
   ══════════════════════════════════════════════════════════════ */
   btnBuscar.addEventListener('click', function () {
-    var marca  = selMarca.value;
-    var modelo = selModelo.value;
+    var marca      = selMarca.value;
+    var añoElegido = parseInt(selAnio.value, 10);
+    var modeloSel  = selModelo.value; /* "Spark 1.0L" */
 
-    if (!marca || !modelo) return;
+    if (!marca || isNaN(añoElegido) || !modeloSel) return;
 
-    /* Buscar primera coincidencia */
+    /* El modelo en el select tiene formato "modelo cilindraje",
+       necesitamos separar para comparar con el JSON */
     var resultado = null;
+
     for (var i = 0; i < catalogo.length; i++) {
-      if (catalogo[i].marca === marca && catalogo[i].modelo === modelo) {
-        resultado = catalogo[i];
+      var r      = catalogo[i];
+      var clave  = r.modelo + (r.cilindraje ? ' ' + r.cilindraje : '');
+      var desde  = parseInt(r.anioDesde, 10);
+      var hasta  = parseInt(r.anioHasta, 10);
+
+      if (r.marca === marca &&
+          clave === modeloSel &&
+          añoElegido >= desde &&
+          añoElegido <= hasta) {
+        resultado = r;
         break;
       }
     }
 
     if (resultado) {
-      mostrarResultado(resultado);
+      mostrarResultado(resultado, añoElegido);
     } else {
-      /* No debería pasar (los selects vienen del mismo JSON),
-         pero por si acaso mostramos mensaje de consulta directa */
-      mostrarConsultaDirecta(marca, modelo);
+      mostrarConsultaDirecta(marca, modeloSel, añoElegido);
     }
   });
 
 
   /* ══════════════════════════════════════════════════════════════
      MOSTRAR RESULTADO
-     Llena el card con referencia + precio y actualiza el botón
-     WhatsApp con un mensaje pre-cargado listo para enviar.
+     Llena el card con referencia + precio y construye el link
+     de WhatsApp incluyendo el año específico elegido.
   ══════════════════════════════════════════════════════════════ */
-  function mostrarResultado(r) {
+  function mostrarResultado(r, añoElegido) {
     var precioFormateado = formatearPrecio(r.precio);
 
-    /* Rango de años: si son iguales mostramos uno solo */
-    var anios = (r.anioDesde === r.anioHasta)
-      ? String(r.anioDesde)
-      : r.anioDesde + '–' + r.anioHasta;
-
-    /* Llenar referencia y precio en el card */
     document.getElementById('res-referencia').textContent = r.referencia;
     document.getElementById('res-precio').textContent     = precioFormateado;
 
-    /* Construir y asignar mensaje WhatsApp al hacer clic en el botón,
-       para que incluya la dirección que el cliente escribe */
     var btnWa = document.getElementById('btn-whatsapp-buscador');
 
     function construirMensaje() {
@@ -211,8 +263,8 @@
         '*Hola, quiero pedir una batería a domicilio en Medellín*',
         '',
         '🚗 Vehículo: ' + r.marca + ' ' + r.modelo,
-        '📅 Año: ' + anios,
-        '⚙️ Motor: ' + r.cilindraje,
+        '📅 Año: ' + añoElegido,
+        '⚙️ Motor: ' + (r.cilindraje || '—'),
         '📦 Referencia batería: ' + r.referencia,
         '💰 Precio: ' + precioFormateado,
         '',
@@ -223,56 +275,55 @@
       return lineas.join('\n');
     }
 
-    /* Actualizar href cada vez que se hace clic — captura la dirección escrita */
+    /* Actualizar href en cada click para capturar la dirección */
     btnWa.onclick = function () {
       btnWa.href = 'https://wa.me/' + window.WA_NUMERO +
                    '?text=' + encodeURIComponent(construirMensaje());
     };
-
-    /* Href por defecto en caso de clic inmediato sin dirección */
     btnWa.href = 'https://wa.me/' + window.WA_NUMERO +
                  '?text=' + encodeURIComponent(construirMensaje());
 
-    /* Mostrar el card (estaba hidden) y hacer scroll suave hasta él */
     var seccion = document.getElementById('resultado-bateria');
     seccion.hidden = false;
-    seccion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  function mostrarConsultaDirecta(marca, modelo) {
+  function mostrarConsultaDirecta(marca, modelo, año) {
     document.getElementById('res-referencia').textContent = 'Consulta directa';
     document.getElementById('res-precio').textContent     = 'Pregúntanos por WhatsApp';
 
     var msg = encodeURIComponent(
-      'Hola, busco batería para ' + marca + ' ' + modelo + '. ¿Tienen disponibilidad?'
+      'Hola, busco batería para ' + marca + ' ' + modelo +
+      ' año ' + año + '. ¿Tienen disponibilidad?'
     );
     var btnWa = document.getElementById('btn-whatsapp-buscador');
     btnWa.href = 'https://wa.me/' + window.WA_NUMERO + '?text=' + msg;
 
     var seccion = document.getElementById('resultado-bateria');
     seccion.hidden = false;
-    seccion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    seccion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
 
   /* ══════════════════════════════════════════════════════════════
      UTILIDADES
   ══════════════════════════════════════════════════════════════ */
-
-  /* Formatea número a moneda colombiana: 250000 → "$250.000 COP" */
   function formatearPrecio(num) {
     if (typeof num !== 'number') return String(num);
     return '$' + num.toLocaleString('es-CO') + ' COP';
   }
 
-  /* Resetea el select de modelos a su estado inicial (disabled) */
-  function reiniciarModelo() {
-    selModelo.innerHTML  = '<option value="">— Primero elige marca —</option>';
-    selModelo.disabled   = true;
-    btnBuscar.disabled   = true;
+  function resetAnio() {
+    selAnio.innerHTML = '<option value="">— Primero elige la marca —</option>';
+    selAnio.disabled  = true;
   }
 
-  /* Oculta el card de resultado */
+  function resetModelo() {
+    selModelo.innerHTML = '<option value="">— Primero elige el año —</option>';
+    selModelo.disabled  = true;
+    btnBuscar.disabled  = true;
+  }
+
   function ocultarResultado() {
     var sec = document.getElementById('resultado-bateria');
     if (sec) sec.hidden = true;
