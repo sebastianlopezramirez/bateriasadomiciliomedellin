@@ -1,0 +1,13 @@
+# Archivos de trabajo internos — no van al repositorio
+vault/
+vault-bateriasadomiciliomedellin/
+practica/
+otros/
+*.pdf
+*.xlsx
+*.txt
+data/test.txt
+checkpoint-*.md
+PLAN_4_DIAS.md
+iniciar-preview.bat
+HTML-SERVILLANTASELDORADO*
