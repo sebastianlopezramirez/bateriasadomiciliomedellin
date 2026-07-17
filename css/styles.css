@@ -2113,4 +2113,121 @@
   /* Espacio inferior en el body para que el footer no quede tapado */
   body { padding-bottom: 42px; }
 
+
+  /* ================================================================
+     MARCAS — colores por marca COEXITO · MAC · MAC GOLD · MAC AGM
+  ================================================================ */
+  /* Hero badges */
+  .marca-badge--coexito { background: #1a5fa8; color: #fff; border-color: #1a5fa8; }
+  .marca-badge--mac     { background: #111; color: var(--amarillo); border-color: var(--amarillo); }
+  .marca-badge--macgold { background: #b8860b; color: #fff; border-color: #b8860b; }
+  .marca-badge--macagm  { background: #555; color: #fff; border-color: #888; }
+
+  /* Marquesina marcas */
+  .marca-marquesina--coexito { color: #5aacff !important; font-weight: 700; }
+  .marca-marquesina--mac     { color: var(--amarillo-texto) !important; font-weight: 700; }
+  .marca-marquesina--macgold { color: #f5c842 !important; font-weight: 700; }
+  .marca-marquesina--macagm  { color: #aab4bf !important; font-weight: 700; }
+
+  /* Footer / confianza logos */
+  .marca-logo--coexito { color: #5aacff; border-color: #1a5fa8; }
+  .marca-logo--mac     { color: var(--amarillo-texto); border-color: var(--amarillo); }
+  .marca-logo--macgold { color: #f5c842; border-color: #b8860b; }
+  .marca-logo--macagm  { color: #aab4bf; border-color: #666; }
+
+  /* ================================================================
+     HERO SUBTÍTULO — más grande según reunión 2
+  ================================================================ */
+  .hero__subtitulo {
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem) !important;
+    line-height: 1.65 !important;
+  }
+
+  /* ================================================================
+     BLOQUES INSTAGRAM Y VIDEO — mismo tamaño exacto
+  ================================================================ */
+  .col-video__bloque {
+    /* Ambos bloques: Instagram arriba, video abajo — misma altura */
+    width: 100%;
+    height: 400px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+  /* Instagram: el blockquote llena el bloque */
+  .col-video__bloque .instagram-media {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Video: ocupa todo el alto disponible */
+  .col-video__bloque video {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    object-fit: cover;
+    display: block;
+  }
+  /* Caption compartido */
+  .col-video__bloque figcaption {
+    font-size: 0.78rem;
+    color: var(--texto-dim);
+    text-align: center;
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .col-video__handle-link {
+    color: var(--cyan);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .col-video__handle-link:hover { text-decoration: underline; }
+
+  /* ================================================================
+     BOTONES FLOTANTES — intensidad ajustada (más visibles)
+  ================================================================ */
+  .btn-flotante--rojo  { opacity: 1; box-shadow: 0 6px 20px -4px rgba(224,83,83,0.7); }
+  .btn-flotante--verde { opacity: 1; box-shadow: 0 6px 20px -4px rgba(37,211,102,0.7); }
+  .btn-flotante--amarillo { opacity: 1; box-shadow: 0 6px 20px -4px rgba(255,209,0,0.65); }
+  .btn-flotante:hover  { opacity: 1 !important; transform: scale(1.12); }
+
+  /* ================================================================
+     FOOTER — MAPA GOOGLE
+  ================================================================ */
+  .footer__mapa {
+    margin-top: 10px;
+    margin-left: 0;   /* alineado al borde del texto */
+    padding: 0;
+  }
+  .footer__mapa iframe {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+  }
+  .footer__mapa figcaption {
+    font-size: 0.72rem;
+    margin-top: 4px;
+    line-height: 1;
+  }
+  .footer__mapa figcaption a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+  .footer__mapa figcaption a:hover { text-decoration: underline; }
+
+  /* WhatsApp en redes */
+  .footer__red-link--wa { color: #25D366; }
+  .footer__red-link--wa svg { fill: #25D366; }
+
+  /* Cobertura grid — 4 columnas cuando hay oriente */
+  @media (min-width: 1024px) {
+    .cobertura__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
  /* fin @layer components */
