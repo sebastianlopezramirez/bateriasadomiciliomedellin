@@ -738,17 +738,34 @@
     color: var(--texto-muted);
     margin-bottom: 6px;
   }
-  .resultado-referencia {
-    font-family: var(--font-head);
-    font-size: 1.5rem;
-    color: var(--texto);
-    margin-bottom: 4px;
-  }
-  .resultado-precio {
-    font-size: 1.1rem;
-    color: var(--amarillo-texto);
+  /* Badge Star-Stop */
+  .resultado-starstop {
+    display: inline-block;
+    background: #1a3a5c;
+    color: #FFD100;
+    font-size: 0.75rem;
     font-weight: 700;
-    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* Lista de referencias */
+  .resultado-refs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .resultado-ref-chip {
+    background: var(--amarillo);
+    color: #1a1a1a;
+    font-family: var(--font-head);
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 6px;
   }
   .resultado-garantia {
     font-size: 0.78rem;
@@ -2224,6 +2241,48 @@
   /* WhatsApp en redes */
   .footer__red-link--wa { color: #25D366; }
   .footer__red-link--wa svg { fill: #25D366; }
+
+  /* ================================================================
+     REVIEWS GOOGLE — badge + estrellas dinámicas
+  ================================================================ */
+  /* Badge de calificación encima de los testimonios */
+  .reviews-badge-google {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 0 0 28px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--texto-muted);
+  }
+  .reviews-badge-link {
+    font-size: 0.78rem;
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .reviews-badge-link:hover { text-decoration: underline; }
+
+  /* Estrellas dinámicas generadas por reviews.js */
+  .estrella-gmb {
+    width: 13px;
+    height: 13px;
+  }
+  .estrella-gmb--llena  { fill: var(--amarillo); }
+  .estrella-gmb--vacia  { fill: transparent; stroke: var(--amarillo); stroke-width: 1.5; }
+
+  /* Tiempo relativo de la reseña (ej: "hace 2 meses") */
+  .review-tiempo {
+    font-weight: 400;
+    color: var(--texto-dim);
+  }
+
+  /* Skeleton: aria-busy en la lista mientras carga */
+  .col-reviews[aria-busy="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
   /* Cobertura grid — 4 columnas cuando hay oriente */
   @media (min-width: 1024px) {

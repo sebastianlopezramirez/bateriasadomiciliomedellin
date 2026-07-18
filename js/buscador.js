@@ -18,8 +18,8 @@
  *   #sel-modelo    → <select> modelos (empieza disabled)
  *   #btn-buscar    → botón "Consultar batería" (empieza disabled)
  *   #resultado-bateria   → sección resultado (empieza hidden)
- *   #res-referencia      → <h3> referencia de la batería
- *   #res-precio          → <p> precio formateado
+ *   #res-starstop        → badge "vehículo Start-Stop" (hidden si no aplica)
+ *   #res-lista-refs      → chips con todas las referencias compatibles
  *   #btn-whatsapp-buscador → botón ¡Domicilio Ya!
  *   #res-direccion       → input de dirección
  *
@@ -207,7 +207,7 @@
 
   /* ══════════════════════════════════════════════════════════════
      EVENTO: click en "Consultar batería"
-     Busca la primera coincidencia por marca + año + modelo.
+     Recoge TODAS las referencias para marca + año + modelo.
   ══════════════════════════════════════════════════════════════ */
   btnBuscar.addEventListener('click', function () {
     var marca      = selMarca.value;
@@ -216,27 +216,26 @@
 
     if (!marca || isNaN(añoElegido) || !modeloSel) return;
 
-    /* El modelo en el select tiene formato "modelo cilindraje",
-       necesitamos separar para comparar con el JSON */
-    var resultado = null;
+    var resultados = [];
+    var esStarStop = false;
 
     for (var i = 0; i < catalogo.length; i++) {
-      var r      = catalogo[i];
-      var clave  = r.modelo + (r.cilindraje ? ' ' + r.cilindraje : '');
-      var desde  = parseInt(r.anioDesde, 10);
-      var hasta  = parseInt(r.anioHasta, 10);
+      var r     = catalogo[i];
+      var clave = r.modelo + (r.cilindraje ? ' ' + r.cilindraje : '');
+      var desde = parseInt(r.anioDesde, 10);
+      var hasta = parseInt(r.anioHasta, 10);
 
       if (r.marca === marca &&
           clave === modeloSel &&
           añoElegido >= desde &&
           añoElegido <= hasta) {
-        resultado = r;
-        break;
+        resultados.push(r);
+        if (r.starStop) esStarStop = true;
       }
     }
 
-    if (resultado) {
-      mostrarResultado(resultado, añoElegido);
+    if (resultados.length > 0) {
+      mostrarResultado(resultados, añoElegido, esStarStop);
     } else {
       mostrarConsultaDirecta(marca, modeloSel, añoElegido);
     }
@@ -245,15 +244,40 @@
 
   /* ══════════════════════════════════════════════════════════════
      MOSTRAR RESULTADO
-     Llena el card con referencia + precio y construye el link
-     de WhatsApp incluyendo el año específico elegido.
+     Muestra TODAS las referencias del carro sin precio.
+     Indica si el vehículo es Star-Stop.
   ══════════════════════════════════════════════════════════════ */
-  function mostrarResultado(r, añoElegido) {
-    var precioFormateado = formatearPrecio(r.precio);
+  function mostrarResultado(resultados, añoElegido, esStarStop) {
+    var primero = resultados[0];
 
-    document.getElementById('res-referencia').textContent = r.referencia;
-    document.getElementById('res-precio').textContent     = precioFormateado;
+    /* ── Badge Star-Stop ─────────────────────────────────────── */
+    var badgeSS = document.getElementById('res-starstop');
+    if (esStarStop) {
+      badgeSS.textContent = '⚡ Vehículo Start-Stop — requiere batería AGM';
+      badgeSS.hidden = false;
+    } else {
+      badgeSS.hidden = true;
+    }
 
+    /* ── Lista de referencias (chips) ────────────────────────── */
+    var lista = document.getElementById('res-lista-refs');
+    lista.innerHTML = '';
+
+    /* Deduplicar referencias */
+    var vistas = {};
+    for (var i = 0; i < resultados.length; i++) {
+      var ref = (resultados[i].referencia || '').trim();
+      if (ref && !vistas[ref]) {
+        vistas[ref] = true;
+        var chip = document.createElement('span');
+        chip.className   = 'resultado-ref-chip';
+        chip.textContent = ref;
+        lista.appendChild(chip);
+      }
+    }
+
+    /* ── Mensaje WhatsApp ────────────────────────────────────── */
+    var refs = Object.keys(vistas).join(', ');
     var btnWa = document.getElementById('btn-whatsapp-buscador');
 
     function construirMensaje() {
@@ -262,20 +286,19 @@
       var lineas = [
         '*Hola, quiero pedir una batería a domicilio en Medellín*',
         '',
-        '🚗 Vehículo: ' + r.marca + ' ' + r.modelo,
+        '🚗 Vehículo: ' + primero.marca + ' ' + primero.modelo,
         '📅 Año: ' + añoElegido,
-        '⚙️ Motor: ' + (r.cilindraje || '—'),
-        '📦 Referencia batería: ' + r.referencia,
-        '💰 Precio: ' + precioFormateado,
+        '⚙️ Motor: ' + (primero.cilindraje || '—'),
+        (esStarStop ? '⚡ Start-Stop: SÍ (requiere AGM)' : ''),
+        '📦 Referencias compatibles: ' + refs,
         '',
         '📍 Mi dirección: ' + direccion,
         '',
         '¿Pueden venir ahora? ¡Gracias!'
-      ];
+      ].filter(function(l){ return l !== ''; });
       return lineas.join('\n');
     }
 
-    /* Actualizar href en cada click para capturar la dirección */
     btnWa.onclick = function () {
       btnWa.href = 'https://wa.me/' + window.WA_NUMERO +
                    '?text=' + encodeURIComponent(construirMensaje());
@@ -289,8 +312,11 @@
   }
 
   function mostrarConsultaDirecta(marca, modelo, año) {
-    document.getElementById('res-referencia').textContent = 'Consulta directa';
-    document.getElementById('res-precio').textContent     = 'Pregúntanos por WhatsApp';
+    var badgeSS = document.getElementById('res-starstop');
+    badgeSS.hidden = true;
+
+    var lista = document.getElementById('res-lista-refs');
+    lista.innerHTML = '<span class="resultado-ref-chip">Consultar por WhatsApp</span>';
 
     var msg = encodeURIComponent(
       'Hola, busco batería para ' + marca + ' ' + modelo +
@@ -308,11 +334,6 @@
   /* ══════════════════════════════════════════════════════════════
      UTILIDADES
   ══════════════════════════════════════════════════════════════ */
-  function formatearPrecio(num) {
-    if (typeof num !== 'number') return String(num);
-    return '$' + num.toLocaleString('es-CO') + ' COP';
-  }
-
   function resetAnio() {
     selAnio.innerHTML = '<option value="">— Primero elige la marca —</option>';
     selAnio.disabled  = true;

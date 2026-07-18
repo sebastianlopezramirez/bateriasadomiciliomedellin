@@ -341,9 +341,11 @@
               <img src="img/baterias-MAC-PARACARRO.webp" alt="Baterías MAC" class="resultado-mac-logo">
             </figure>
             <section class="resultado-info">
-              <p class="resultado-label">✅ Batería recomendada para tu carro:</p>
-              <h3 class="resultado-referencia" id="res-referencia">—</h3>
-              <p class="resultado-precio" id="res-precio">—</p>
+              <p class="resultado-label">✅ Referencias disponibles para tu carro:</p>
+              <!-- Badge Star-Stop (visible solo si aplica) -->
+              <p class="resultado-starstop" id="res-starstop" hidden></p>
+              <!-- Lista dinámica de referencias — llenada por buscador.js -->
+              <div class="resultado-refs" id="res-lista-refs"></div>
               <p class="resultado-garantia">⏱ Llegamos en 30 min · Instalación ¡GRATIS! · Garantía: COEXITO 12m · MAC 15m · MAC GOLD 18m · MAC AGM 24m</p>
             </section>
           </article>
@@ -811,12 +813,20 @@
     <article class="contenedor">
 
       <h2>Lo que dicen nuestros clientes en Medellín</h2>
+      <!-- Badge de calificación — se actualiza con datos reales de Google cuando la API carga -->
+      <p class="reviews-badge-google">
+        <span id="reviews-rating-badge">⭐ 5.0 · +200 reseñas en Google</span>
+        <a href="https://share.google/HxvYiMcOsL24rxOHB" target="_blank" rel="noopener" class="reviews-badge-link">
+          Ver todas en Google →
+        </a>
+      </p>
 
       <!-- article: contenido autocontenido (grid de testimonios + video) -->
       <article class="testimonios__grid">
 
-        <!-- ul: lista de reseñas de clientes -->
-        <ul class="col-reviews">
+        <!-- ul: lista de reseñas — id="reviews-google" permite que reviews.js inyecte las reales -->
+        <!-- Si la API no está configurada, estas tarjetas estáticas quedan como fallback -->
+        <ul class="col-reviews" id="reviews-google">
 
           <li>
             <article class="testimonio-card">
@@ -1265,11 +1275,9 @@
     var WA_NUMERO = '573022949358';
   </script>
 
-
   <!--
     LAZY LOADING INSTAGRAM
-    embed.js solo se descarga cuando el usuario hace scroll
-    hasta la sección de testimonios.
+    embed.js solo se descarga cuando el usuario hace scroll hasta la sección de testimonios.
   -->
   <script>
     (function() {
@@ -1290,6 +1298,9 @@
 
   <script src="js/buscador.js" defer></script>
   <script src="js/whatsapp.js" defer></script>
+  <!-- Google Reviews — carga reseñas reales de Google Mi Negocio -->
+  <!-- Configura tu API Key y Place ID en js/reviews.js → REVIEWS_CONFIG -->
+  <script src="js/reviews.js" defer></script>
 
   <!-- Hamburguesa: abre/cierra menú móvil -->
   <script>
@@ -1297,13 +1308,11 @@
       var btn  = document.querySelector('.nav-hamburguesa');
       var menu = document.getElementById('nav-mobile');
       if (!btn || !menu) return;
-
       btn.addEventListener('click', function() {
         var abierto = !menu.hidden;
         menu.hidden = abierto;
         btn.setAttribute('aria-expanded', String(!abierto));
       });
-
       menu.querySelectorAll('.nav-mobile__link').forEach(function(a) {
         a.addEventListener('click', function() {
           menu.hidden = true;
@@ -1313,36 +1322,22 @@
     })();
   </script>
 
-
   <!-- ============================================================
-       BARRA INFERIOR FLOTANTE — nombre de empresa anclado al fondo
+       BARRA INFERIOR FLOTANTE
   ============================================================ -->
   <aside class="barra-marca-inferior" aria-label="Baterías a Domicilio Medellín">
     <p class="barra-marca-inferior__texto">BATERÍAS A DOMICILIO MEDELLÍN</p>
   </aside>
 
   <!-- ============================================================
-       MODO OSCURO / LUZ — Toggle con persistencia en localStorage
-       Metodología:
-       1. ENTENDER: el usuario quiere cambiar entre tema oscuro y claro
-       2. PENSAR: guardamos la preferencia en localStorage para que
-                  se recuerde al recargar la página
-       3. ESCRIBIR: al cargar, leemos la preferencia; al hacer clic,
-                   la alternamos y actualizamos el ícono del botón
-       4. VERIFICAR: dark = 🌙 activo por defecto, light = ☀️ activo
+       MODO OSCURO / LUZ
   ============================================================ -->
   <script>
     (function () {
-      var html   = document.documentElement;
-      var btn    = document.getElementById('btnModo');
-      var CLAVE  = 'tema-baterias';
-
-      /* Lee preferencia guardada; si no hay, el tema por defecto es 'dark' */
-      function temaActual() {
-        return localStorage.getItem(CLAVE) || 'dark';
-      }
-
-      /* Aplica el tema al <html> y actualiza el ícono del botón */
+      var html  = document.documentElement;
+      var btn   = document.getElementById('btnModo');
+      var CLAVE = 'tema-baterias';
+      function temaActual() { return localStorage.getItem(CLAVE) || 'dark'; }
       function aplicarTema(tema) {
         if (tema === 'light') {
           html.setAttribute('data-theme', 'light');
@@ -1356,11 +1351,7 @@
           btn.setAttribute('title', 'Modo oscuro activo — click para claro');
         }
       }
-
-      /* Al cargar la página, aplicamos el tema guardado */
       aplicarTema(temaActual());
-
-      /* Al hacer clic, alternamos el tema y lo guardamos */
       btn.addEventListener('click', function () {
         var nuevo = temaActual() === 'dark' ? 'light' : 'dark';
         localStorage.setItem(CLAVE, nuevo);
