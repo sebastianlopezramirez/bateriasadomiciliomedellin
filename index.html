@@ -338,25 +338,23 @@
             <p class="resultado-label" id="res-label">Marcas disponibles para tu carro:</p>
             <!-- Badge Star-Stop (visible solo si aplica) -->
             <p class="resultado-starstop" id="res-starstop" hidden></p>
-            <!-- Fila horizontal de 4 logos — referencia se actualiza con JS -->
-            <div class="marcas-fila" id="res-lista-refs">
-              <div class="marca-item">
-                <img src="img/baterias-MAC-PARACARRO.webp" alt="MAC" class="marca-logo">
-                <span class="marca-ref" id="ref-mac">—</span>
-              </div>
-              <div class="marca-item">
-                <img src="img/mac-agm-gris.png" alt="MAC AGM" class="marca-logo">
-                <span class="marca-ref" id="ref-agm">—</span>
-              </div>
-              <div class="marca-item">
-                <img src="img/mac-gold-amarilla.png" alt="MAC GOLD" class="marca-logo">
-                <span class="marca-ref" id="ref-gold">—</span>
-              </div>
-              <div class="marca-item">
-                <img src="img/coexito-azul.png" alt="COEXITO" class="marca-logo">
-                <span class="marca-ref" id="ref-coexito">—</span>
-              </div>
-            </div>
+            <!-- Fila horizontal de 4 logos — siempre visibles, sin texto debajo -->
+            <ul class="marcas-fila" id="res-lista-refs" aria-label="Marcas de baterías disponibles">
+              <li class="marca-item">
+                <img src="img/baterias-MAC-PARACARRO.webp" alt="Batería MAC estándar" class="marca-logo">
+              </li>
+              <li class="marca-item">
+                <img src="img/mac-agm-gris.png" alt="Batería MAC AGM" class="marca-logo">
+              </li>
+              <li class="marca-item">
+                <img src="img/mac-gold-amarilla.png" alt="Batería MAC Gold" class="marca-logo">
+              </li>
+              <li class="marca-item">
+                <img src="img/coexito-azul.png" alt="Batería COEXITO" class="marca-logo">
+              </li>
+            </ul>
+            <!-- Referencia prominente — aparece solo tras la búsqueda -->
+            <strong class="ref-destacada" id="res-referencia" hidden></strong>
             <p class="resultado-garantia">⏱ 30 min · Instalación ¡GRATIS! · COEXITO 12m · MAC 15m · MAC GOLD 18m · MAC AGM 24m</p>
           </section>
         </article>

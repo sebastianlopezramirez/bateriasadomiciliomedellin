@@ -268,18 +268,34 @@
       badgeSS.hidden = true;
     }
 
-    /* ── Clasificar referencias y renderizar grid 2×2 ───────── */
+    /* ── Clasificar referencias ──────────────────────────────── */
     var cats = { mac: '', gold: '', agm: '', coexito: '' };
     for (var i = 0; i < resultados.length; i++) {
       var ref = (resultados[i].referencia || '').trim();
       if (!ref) continue;
-      if (!cats.agm     && /^LN[0-9]-M$/i.test(ref))          cats.agm     = ref;
-      else if (!cats.gold    && /MG$/i.test(ref))              cats.gold    = ref;
-      else if (!cats.coexito && /[XT]XP$|^D\d/i.test(ref))    cats.coexito = ref;
-      else if (!cats.mac     && /MC$|ME$/i.test(ref))          cats.mac     = ref;
+      if (!cats.agm     && /^LN[0-9]-M$/i.test(ref))           cats.agm     = ref;
+      else if (!cats.gold    && /MG$/i.test(ref))               cats.gold    = ref;
+      else if (!cats.coexito && /[XT]XP$|^D\d/i.test(ref))     cats.coexito = ref;
+      else if (!cats.mac     && /MC$|ME$/i.test(ref))           cats.mac     = ref;
     }
-    renderChips(cats);
-    document.getElementById('res-label').textContent = '✅ Referencias para tu carro:';
+
+    /* ── Referencia destacada: mostrar la principal con su color */
+    var catPrincipal = cats.mac     ? 'mac'
+                     : cats.agm     ? 'agm'
+                     : cats.gold    ? 'gold'
+                     : cats.coexito ? 'coexito' : '';
+    var refPrincipal = cats[catPrincipal] || '';
+
+    var elRef = document.getElementById('res-referencia');
+    if (refPrincipal) {
+      elRef.textContent = refPrincipal;
+      elRef.className   = 'ref-destacada ref-destacada--' + catPrincipal;
+      elRef.hidden      = false;
+    } else {
+      elRef.hidden = true;
+    }
+
+    document.getElementById('res-label').textContent = '✅ Referencia para tu carro:';
 
     /* ── Mensaje WhatsApp ────────────────────────────────────── */
     var refs = Object.keys(vistas).join(', ');
@@ -320,6 +336,7 @@
     var badgeSS = document.getElementById('res-starstop');
     badgeSS.hidden = true;
     renderChips({});
+    document.getElementById('res-referencia').hidden = true;
     document.getElementById('res-label').textContent = 'Consulta directa — escríbenos por WhatsApp:';
 
     var msg = encodeURIComponent(
@@ -367,6 +384,9 @@
   function ocultarResultado() {
     var sec = document.getElementById('resultado-bateria');
     if (sec) sec.hidden = true;
+    var elRef = document.getElementById('res-referencia');
+    if (elRef) elRef.hidden = true;
+    document.getElementById('res-label').textContent = 'Marcas disponibles para tu carro:';
   }
 
 })();

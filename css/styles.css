@@ -783,13 +783,16 @@
     margin-bottom: 10px;
     align-items: flex-start;
     justify-content: flex-start;
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
   }
   .marca-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    flex: 0 0 auto;   /* no crecer, tamaño fijo */
+    flex: 0 0 auto;
   }
   .marca-logo {
     width: 72px;
@@ -799,18 +802,23 @@
     display: block;
     image-rendering: auto;
   }
-  .marca-ref {
+  /* Referencia prominente tras búsqueda */
+  .ref-destacada {
+    display: inline-block;
     font-family: var(--font-head);
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--texto);
-    text-align: center;
-    line-height: 1.1;
-    word-break: break-all;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    padding: 6px 20px;
+    border-radius: 10px;
+    margin: 8px 0 6px;
+    border: 2.5px solid #111;
   }
-  .marca-ref--vacio {
-    display: none;
-  }
+  /* Color según categoría de batería */
+  .ref-destacada--mac     { background: #111;    color: #FFD100; border-color: #000; }
+  .ref-destacada--agm     { background: #d0d0d0; color: #111;    border-color: #555; }
+  .ref-destacada--gold    { background: #FFD100; color: #111;    border-color: #b8960a; }
+  .ref-destacada--coexito { background: #1565C0; color: #fff;    border-color: #0d47a1; }
   .resultado-garantia {
     font-size: 0.78rem;
     color: var(--texto-dim);
@@ -2131,6 +2139,8 @@
     .btn-cta--domicilio { width: 100%; justify-content: center; }
     /* resultado-card apilado */
     .resultado-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+    /* Logos de marca — ligeramente más pequeños en móvil */
+    .marca-logo { width: 60px; height: 37px; }
   }
 
   /* ================================================================
@@ -2141,6 +2151,10 @@
     .cobertura__lista { columns: 1; }
     .pilar__numero { font-size: 1.4rem; }
     .confianza__grid { grid-template-columns: 1fr; }
+    /* Logos aún más compactos en pantallas muy pequeñas */
+    .marcas-fila { gap: 6px; }
+    .marca-logo { width: 52px; height: 32px; border-radius: 7px; }
+    .marca-ref { font-size: 0.55rem; }
   }
 
   /* ================================================================
