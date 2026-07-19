@@ -33,8 +33,13 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-  <!-- Preload imagen LCP real (detectada por PageSpeed) -->
-  <link rel="preload" as="image" href="img/taller-bateriasadomiciliomedellin.webp" fetchpriority="high">
+  <!-- Preload imagen LCP — srcset correcto para que browser precargue la variante justa -->
+  <link rel="preload" as="image"
+        imagesrcset="img/domicilio-bateria-medellin-800.webp 800w,
+                     img/domicilio-bateria-medellin-1400.webp 1400w,
+                     img/domicilio-bateria-medellin-servicio24horas.webp 1728w"
+        imagesizes="(max-width: 900px) calc(100vw - 32px), (max-width: 1400px) 1100px, 1728px"
+        fetchpriority="high">
 
   <!-- ============================================================
        SCHEMA MARKUP — Datos estructurados para Google
@@ -142,7 +147,7 @@ p{margin:0}a{color:inherit;text-decoration:none}button{font-family:var(--font-bo
 .hero__contenido{max-width:860px;margin:0 auto}
 .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);color:var(--texto);margin-bottom:10px}
 p.hero__acento{font-family:var(--font-head);font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;color:var(--amarillo-texto);letter-spacing:-.02em;margin-bottom:0;line-height:1.1}
-.hero__banner{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:28px 0 24px}
+.hero__banner{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:28px 0 24px}.hero__banner--single{grid-template-columns:1fr}
 .hero__banner-foto{position:relative;margin:0;border-radius:var(--radius);overflow:hidden;aspect-ratio:16/9}
 .hero__banner-foto img{width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius)}
 .hero__banner-badge{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(12,17,23,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,209,0,.25);border-radius:40px;padding:6px 14px;font-size:.72rem;font-weight:600;color:var(--texto);white-space:nowrap;display:flex;align-items:center;gap:7px}
@@ -214,13 +219,13 @@ nav.hero__ctas .btn-cta--hero:first-child{background:#25D366;color:#fff;animatio
       <p class="hero__acento">¡Llegamos en 30 Minutos!</p>
 
       <!-- figure: grupo de imágenes relacionadas del servicio -->
-      <figure class="hero__banner" aria-label="Servicio de baterías a domicilio en Medellín 24 horas">
+      <figure class="hero__banner hero__banner--single" aria-label="Servicio de baterías a domicilio en Medellín 24 horas">
         <figure class="hero__banner-foto">
           <img src="img/domicilio-bateria-medellin-servicio24horas.webp"
                srcset="img/domicilio-bateria-medellin-800.webp 800w,
                        img/domicilio-bateria-medellin-1400.webp 1400w,
                        img/domicilio-bateria-medellin-servicio24horas.webp 1728w"
-               sizes="(max-width: 900px) 795px, (max-width: 1400px) 1400px, 1728px"
+               sizes="(max-width: 900px) calc(100vw - 32px), (max-width: 1400px) 1100px, 1728px"
                alt="Técnico instalando batería a domicilio en Medellín"
                width="1728" height="623"
                fetchpriority="high"
@@ -228,17 +233,6 @@ nav.hero__ctas .btn-cta--hero:first-child{background:#25D366;color:#fff;animatio
           <figcaption class="hero__banner-badge">
             <span class="badge-disponible-dot"></span>
             Técnico disponible ahora · 24/7
-          </figcaption>
-        </figure>
-        <figure class="hero__banner-foto">
-          <img src="img/taller-bateriasadomiciliomedellin.webp"
-               alt="Taller baterías a domicilio Medellín — servicio 24 horas"
-               width="681" height="369"
-               loading="eager"
-               fetchpriority="high">
-          <figcaption class="hero__banner-badge hero__banner-badge--alt">
-            <span class="badge-disponible-dot"></span>
-            Medellín y Área Metropolitana
           </figcaption>
         </figure>
       </figure>

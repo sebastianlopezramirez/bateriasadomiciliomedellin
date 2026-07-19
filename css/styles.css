@@ -347,6 +347,9 @@
     gap: 10px;
     margin: 28px 0 24px;
   }
+  .hero__banner--single {
+    grid-template-columns: 1fr;
+  }
   .hero__banner-foto {
     position: relative;
     margin: 0;
