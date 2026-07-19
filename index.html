@@ -1334,28 +1334,30 @@
   ============================================================ -->
   <script>
     (function () {
-      var html  = document.documentElement;
-      var btn   = document.getElementById('btnModo');
-      var CLAVE = 'tema-baterias';
-      function temaActual() { return localStorage.getItem(CLAVE) || 'dark'; }
+      var html     = document.documentElement;
+      var btn      = document.getElementById('btnModo');
+      var temaActivo = 'dark'; /* siempre inicia en oscuro */
+
       function aplicarTema(tema) {
+        temaActivo = tema;
         if (tema === 'light') {
           html.setAttribute('data-theme', 'light');
           btn.textContent = '☀️';
           btn.setAttribute('aria-label', 'Cambiar a modo oscuro');
-          btn.setAttribute('title', 'Modo claro activo — click para oscuro');
+          btn.setAttribute('title', 'Modo tech activo — click para oscuro');
         } else {
           html.removeAttribute('data-theme');
           btn.textContent = '🌙';
-          btn.setAttribute('aria-label', 'Cambiar a modo claro');
-          btn.setAttribute('title', 'Modo oscuro activo — click para claro');
+          btn.setAttribute('aria-label', 'Cambiar a modo tech');
+          btn.setAttribute('title', 'Modo oscuro activo — click para tech');
         }
       }
-      aplicarTema(temaActual());
+
+      /* Siempre arranca en oscuro, sin leer localStorage */
+      aplicarTema('dark');
+
       btn.addEventListener('click', function () {
-        var nuevo = temaActual() === 'dark' ? 'light' : 'dark';
-        localStorage.setItem(CLAVE, nuevo);
-        aplicarTema(nuevo);
+        aplicarTema(temaActivo === 'dark' ? 'light' : 'dark');
       });
     })();
   </script>

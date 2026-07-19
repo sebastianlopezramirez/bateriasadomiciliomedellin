@@ -62,39 +62,64 @@
      OVERRIDES MODO LUZ — componentes con colores hardcodeados
   ================================================================ */
   [data-theme="light"] .barra-marca-inferior {
-    background: rgba(242,244,248,0.96);
-    border-top-color: #007A74;
+    background: rgba(10,18,26,0.97);
+    border-top-color: #00D4C8;
   }
-  [data-theme="light"] .barra-marca-inferior__texto { color: #007A74; }
+  [data-theme="light"] .barra-marca-inferior__texto { color: #00D4C8; }
   [data-theme="light"] th.col-nosotros {
     color: var(--amarillo-texto) !important;
     background: rgba(255,209,0,0.12);
   }
 
   /* ================================================================
-     MODO LUZ — se activa con data-theme="light" en <html>
+     MODO LUZ — fondo tecnológico: hexágonos oscuros + rayos cyan
+     Inspirado en estética tech/industrial
   ================================================================ */
   [data-theme="light"] {
-    /* Fondos */
-    --bg-base:      #F2F4F8;
-    --bg-card:      #FFFFFF;
-    --bg-card-2:    #E8ECF4;
-    --bg-overlay:   rgba(242,244,248,0.95);
+    /* Fondos — dark tech */
+    --bg-base:      #0A1219;
+    --bg-card:      rgba(16,26,40,0.88);
+    --bg-card-2:    rgba(20,32,50,0.92);
+    --bg-overlay:   rgba(10,18,25,0.96);
 
-    /* Bordes */
-    --border:         rgba(0,0,0,0.09);
-    --border-hover:   rgba(201,168,0,0.45);
-    /* Texto acentuado: dorado oscuro legible sobre fondo claro */
-    --amarillo-texto: #7A5C00;
+    /* Bordes — igual que modo oscuro */
+    --border:         rgba(255,255,255,0.07);
+    --border-hover:   rgba(0,212,200,0.40);
 
-    /* Texto — oscuro sobre claro */
-    --texto:        #0C1117;
-    --texto-muted:  rgba(12,17,23,0.58);
-    --texto-dim:    rgba(12,17,23,0.32);
+    /* Marca — amarillo puro sobre fondo oscuro */
+    --amarillo-texto: #FFD100;
 
-    /* Sombras más suaves en claro */
-    --shadow-card:  0 8px 24px -8px rgba(0,0,0,0.12);
-    --shadow-btn:   0 8px 20px -6px rgba(201,168,0,0.35);
+    /* Texto — claro sobre fondo oscuro */
+    --texto:        #E8EDF5;
+    --texto-muted:  rgba(232,237,245,0.55);
+    --texto-dim:    rgba(232,237,245,0.30);
+
+    /* Sombras */
+    --shadow-card:  0 16px 32px -12px rgba(0,0,0,0.70);
+    --shadow-btn:   0 8px 20px -6px rgba(255,209,0,0.40);
+  }
+
+  /* Fondo del body en modo luz: hexágonos + rayos cyan desde esquina */
+  [data-theme="light"] body {
+    background-color: #0A1219;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64'%3E%3Cpolygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='rgba(0%2C212%2C200%2C0.08)' stroke-width='1'/%3E%3C/svg%3E"),
+      conic-gradient(
+        from -8deg at -8% 108%,
+        transparent 0deg,
+        rgba(0,212,200,0.60) 3deg,
+        rgba(0,80,75,0.15)   7deg,
+        rgba(0,212,200,0.50) 11deg,
+        rgba(0,80,75,0.10)   16deg,
+        rgba(0,212,200,0.38) 20deg,
+        rgba(0,80,75,0.06)   25deg,
+        rgba(0,212,200,0.26) 29deg,
+        rgba(0,80,75,0.03)   34deg,
+        rgba(0,212,200,0.15) 38deg,
+        rgba(0,212,200,0.05) 48deg,
+        transparent          60deg,
+        transparent          360deg
+      );
   }
 
   /* ----- RESET ----- */
