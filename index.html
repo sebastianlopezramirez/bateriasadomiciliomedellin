@@ -33,8 +33,8 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-  <!-- Preload imagen hero (LCP) -->
-  <link rel="preload" as="image" href="img/domicilio-bateria-medellin-servicio24horas.webp" fetchpriority="high">
+  <!-- Preload imagen LCP real (detectada por PageSpeed) -->
+  <link rel="preload" as="image" href="img/taller-bateriasadomiciliomedellin.webp" fetchpriority="high">
 
   <!-- ============================================================
        SCHEMA MARKUP — Datos estructurados para Google
@@ -133,6 +133,9 @@
       <a href="https://www.instagram.com/bateriasadomiciliomedellin" target="_blank" rel="noopener" class="logo" aria-label="Baterías a Domicilio Medellín - Instagram">
         <span class="logo-icono-wrap">
           <img src="img/logo-bateriasmedellin.webp"
+               srcset="img/logo-bateriasmedellin-200.webp 200w,
+                       img/logo-bateriasmedellin.webp 707w"
+               sizes="120px"
                alt="Baterías a Domicilio Medellín"
                class="logo-img"
                width="707" height="671"
@@ -176,6 +179,9 @@
       <figure class="hero__banner" aria-label="Servicio de baterías a domicilio en Medellín 24 horas">
         <figure class="hero__banner-foto">
           <img src="img/domicilio-bateria-medellin-servicio24horas.webp"
+               srcset="img/domicilio-bateria-medellin-800.webp 800w,
+                       img/domicilio-bateria-medellin-servicio24horas.webp 1728w"
+               sizes="(max-width: 900px) 800px, 1728px"
                alt="Técnico instalando batería a domicilio en Medellín"
                width="1728" height="623"
                fetchpriority="high"
@@ -189,7 +195,8 @@
           <img src="img/taller-bateriasadomiciliomedellin.webp"
                alt="Taller baterías a domicilio Medellín — servicio 24 horas"
                width="681" height="369"
-               loading="lazy">
+               loading="eager"
+               fetchpriority="high">
           <figcaption class="hero__banner-badge hero__banner-badge--alt">
             <span class="badge-disponible-dot"></span>
             Medellín y Área Metropolitana
@@ -349,16 +356,16 @@
             <!-- Fila horizontal de 4 logos — siempre visibles, sin texto debajo -->
             <ul class="marcas-fila" id="res-lista-refs" aria-label="Marcas de baterías disponibles">
               <li class="marca-item">
-                <img src="img/baterias-MAC-PARACARRO.webp" alt="Batería MAC estándar" class="marca-logo" width="474" height="248" loading="lazy">
+                <img src="img/baterias-MAC-PARACARRO-120.webp" alt="Batería MAC estándar" class="marca-logo" width="120" height="62" loading="lazy">
               </li>
               <li class="marca-item">
-                <img src="img/mac-agm-gris.webp" alt="Batería MAC AGM" class="marca-logo" width="300" height="168" loading="lazy">
+                <img src="img/mac-agm-gris-120.webp" alt="Batería MAC AGM" class="marca-logo" width="120" height="67" loading="lazy">
               </li>
               <li class="marca-item">
-                <img src="img/mac-gold-amarilla.webp" alt="Batería MAC Gold" class="marca-logo" width="307" height="173" loading="lazy">
+                <img src="img/mac-gold-amarilla-120.webp" alt="Batería MAC Gold" class="marca-logo" width="120" height="67" loading="lazy">
               </li>
               <li class="marca-item">
-                <img src="img/coexito-azul.webp" alt="Batería COEXITO" class="marca-logo" width="307" height="173" loading="lazy">
+                <img src="img/coexito-azul-120.webp" alt="Batería COEXITO" class="marca-logo" width="120" height="67" loading="lazy">
               </li>
             </ul>
             <!-- Referencia prominente — aparece solo tras la búsqueda -->
@@ -917,17 +924,15 @@
           </figure>
 
           <!-- Bloque Video — mismo tamaño que Instagram -->
-          <figure class="col-video__bloque" aria-label="Video del servicio de baterías a domicilio en Medellín">
-            <video
-              src="img/servicio-domicilio-bateria.mp4"
-              autoplay
-              muted
-              loop
-              playsinline
-              preload="none"
-              aria-label="Video servicio baterías a domicilio Medellín — instalación gratis en 30 minutos">
-            </video>
-            <figcaption>Así trabajamos — baterías a domicilio en Medellín</figcaption>
+          <figure class="col-video__bloque" aria-label="Servicio de baterías a domicilio en Medellín 24/7">
+            <img src="img/servicio-bateria-domicilio-24-7.webp"
+                 srcset="img/servicio-bateria-domicilio-500.webp 500w,
+                         img/servicio-bateria-domicilio-24-7.webp 1167w"
+                 sizes="(max-width: 768px) 500px, 1167px"
+                 alt="Servicio de baterías a domicilio en Medellín — disponible 24/7"
+                 width="1167" height="1167"
+                 loading="lazy">
+            <figcaption>Servicio 24/7 — baterías a domicilio en Medellín</figcaption>
           </figure>
 
         </aside><!-- /.col-video -->
@@ -1308,6 +1313,7 @@
       if (!colVideo) return;
       var observer = new IntersectionObserver(function(entries) {
         if (entries[0].isIntersecting) {
+          /* Cargar Instagram embed */
           var s = document.createElement('script');
           s.src = '//www.instagram.com/embed.js';
           s.async = true;
