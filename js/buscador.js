@@ -43,11 +43,20 @@
      PASO 0 — CARGAR EL CATÁLOGO
      fetch() descarga el JSON una sola vez al cargar la página.
   ══════════════════════════════════════════════════════════════ */
+  /* Definición de las 4 categorías (reutilizada en varios lugares) */
+  var CATEGORIAS = [
+    { key: 'mac',     label: 'MAC',      mod: 'mac'     },
+    { key: 'gold',    label: 'MAC GOLD', mod: 'gold'    },
+    { key: 'agm',     label: 'MAC AGM',  mod: 'agm'     },
+    { key: 'coexito', label: 'COEXITO',  mod: 'coexito' }
+  ];
+
   fetch('data/catalogo.json')
     .then(function (res) { return res.json(); })
     .then(function (datos) {
       catalogo = datos;
       llenarMarcas();
+      renderChips({});   /* Cajas vacías desde el inicio */
     })
     .catch(function (err) {
       console.error('[Buscador] Error cargando catálogo:', err);
@@ -259,22 +268,18 @@
       badgeSS.hidden = true;
     }
 
-    /* ── Lista de referencias (chips) ────────────────────────── */
-    var lista = document.getElementById('res-lista-refs');
-    lista.innerHTML = '';
-
-    /* Deduplicar referencias */
-    var vistas = {};
+    /* ── Clasificar referencias y renderizar grid 2×2 ───────── */
+    var cats = { mac: '', gold: '', agm: '', coexito: '' };
     for (var i = 0; i < resultados.length; i++) {
       var ref = (resultados[i].referencia || '').trim();
-      if (ref && !vistas[ref]) {
-        vistas[ref] = true;
-        var chip = document.createElement('span');
-        chip.className   = 'resultado-ref-chip';
-        chip.textContent = ref;
-        lista.appendChild(chip);
-      }
+      if (!ref) continue;
+      if (!cats.agm     && /^LN[0-9]-M$/i.test(ref))          cats.agm     = ref;
+      else if (!cats.gold    && /MG$/i.test(ref))              cats.gold    = ref;
+      else if (!cats.coexito && /[XT]XP$|^D\d/i.test(ref))    cats.coexito = ref;
+      else if (!cats.mac     && /MC$|ME$/i.test(ref))          cats.mac     = ref;
     }
+    renderChips(cats);
+    document.getElementById('res-label').textContent = '✅ Referencias para tu carro:';
 
     /* ── Mensaje WhatsApp ────────────────────────────────────── */
     var refs = Object.keys(vistas).join(', ');
@@ -314,9 +319,8 @@
   function mostrarConsultaDirecta(marca, modelo, año) {
     var badgeSS = document.getElementById('res-starstop');
     badgeSS.hidden = true;
-
-    var lista = document.getElementById('res-lista-refs');
-    lista.innerHTML = '<span class="resultado-ref-chip">Consultar por WhatsApp</span>';
+    renderChips({});
+    document.getElementById('res-label').textContent = 'Consulta directa — escríbenos por WhatsApp:';
 
     var msg = encodeURIComponent(
       'Hola, busco batería para ' + marca + ' ' + modelo +
@@ -334,6 +338,21 @@
   /* ══════════════════════════════════════════════════════════════
      UTILIDADES
   ══════════════════════════════════════════════════════════════ */
+  /* ── Actualizar referencias bajo cada logo ───────────────────
+     cats = { mac:'42IST950MC', agm:'LN3-M', gold:'', coexito:'' }
+     Pasar {} para estado inicial (muestra — en todos).
+  ════════════════════════════════════════════════════════════════ */
+  function renderChips(cats) {
+    var IDS = ['mac', 'agm', 'gold', 'coexito'];
+    for (var i = 0; i < IDS.length; i++) {
+      var el  = document.getElementById('ref-' + IDS[i]);
+      if (!el) continue;
+      var val = (cats && cats[IDS[i]]) || '';
+      el.textContent = val;
+      el.className   = 'marca-ref' + (val ? '' : ' marca-ref--vacio');
+    }
+  }
+
   function resetAnio() {
     selAnio.innerHTML = '<option value="">— Primero elige la marca —</option>';
     selAnio.disabled  = true;

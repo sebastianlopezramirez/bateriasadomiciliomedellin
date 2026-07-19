@@ -776,21 +776,40 @@
     margin-bottom: 10px;
   }
 
-  /* Lista de referencias */
-  .resultado-refs {
+  /* Fila horizontal de 4 logos de marca */
+  .marcas-fila {
     display: flex;
-    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
-  .resultado-ref-chip {
-    background: var(--amarillo);
-    color: #1a1a1a;
+  .marca-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;   /* no crecer, tamaño fijo */
+  }
+  .marca-logo {
+    width: 72px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 10px;
+    display: block;
+    image-rendering: auto;
+  }
+  .marca-ref {
     font-family: var(--font-head);
-    font-size: 0.95rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    padding: 5px 14px;
-    border-radius: 6px;
+    color: var(--texto);
+    text-align: center;
+    line-height: 1.1;
+    word-break: break-all;
+  }
+  .marca-ref--vacio {
+    display: none;
   }
   .resultado-garantia {
     font-size: 0.78rem;

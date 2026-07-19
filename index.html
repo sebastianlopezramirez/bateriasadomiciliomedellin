@@ -332,25 +332,37 @@
 
         </fieldset><!-- /.buscador__form -->
 
-        <!-- Resultado — aparece cuando el usuario consulta marca + modelo -->
+        <!-- Card: logos de marcas — siempre visibles -->
+        <article class="resultado-card">
+          <section class="resultado-info">
+            <p class="resultado-label" id="res-label">Marcas disponibles para tu carro:</p>
+            <!-- Badge Star-Stop (visible solo si aplica) -->
+            <p class="resultado-starstop" id="res-starstop" hidden></p>
+            <!-- Fila horizontal de 4 logos — referencia se actualiza con JS -->
+            <div class="marcas-fila" id="res-lista-refs">
+              <div class="marca-item">
+                <img src="img/baterias-MAC-PARACARRO.webp" alt="MAC" class="marca-logo">
+                <span class="marca-ref" id="ref-mac">—</span>
+              </div>
+              <div class="marca-item">
+                <img src="img/mac-agm-gris.png" alt="MAC AGM" class="marca-logo">
+                <span class="marca-ref" id="ref-agm">—</span>
+              </div>
+              <div class="marca-item">
+                <img src="img/mac-gold-amarilla.png" alt="MAC GOLD" class="marca-logo">
+                <span class="marca-ref" id="ref-gold">—</span>
+              </div>
+              <div class="marca-item">
+                <img src="img/coexito-azul.png" alt="COEXITO" class="marca-logo">
+                <span class="marca-ref" id="ref-coexito">—</span>
+              </div>
+            </div>
+            <p class="resultado-garantia">⏱ 30 min · Instalación ¡GRATIS! · COEXITO 12m · MAC 15m · MAC GOLD 18m · MAC AGM 24m</p>
+          </section>
+        </article>
+
+        <!-- Bloque CTA — aparece solo después de consultar -->
         <section class="buscador__resultado" id="resultado-bateria" aria-live="polite" hidden>
-
-          <!-- Card: info de la batería recomendada -->
-          <article class="resultado-card">
-            <figure class="resultado-marca-badge" aria-hidden="true">
-              <img src="img/baterias-MAC-PARACARRO.webp" alt="Baterías MAC" class="resultado-mac-logo">
-            </figure>
-            <section class="resultado-info">
-              <p class="resultado-label">✅ Referencias disponibles para tu carro:</p>
-              <!-- Badge Star-Stop (visible solo si aplica) -->
-              <p class="resultado-starstop" id="res-starstop" hidden></p>
-              <!-- Lista dinámica de referencias — llenada por buscador.js -->
-              <div class="resultado-refs" id="res-lista-refs"></div>
-              <p class="resultado-garantia">⏱ Llegamos en 30 min · Instalación ¡GRATIS! · Garantía: COEXITO 12m · MAC 15m · MAC GOLD 18m · MAC AGM 24m</p>
-            </section>
-          </article>
-
-          <!-- Bloque CTA: dirección + botón DOMICILIO YA -->
           <section class="resultado-cta-bloque">
             <p class="resultado-cta-titulo">📍 ¿Dónde te llevamos? <span class="resultado-cta-urgencia">— el técnico está esperando la dirección para salir de <strong>INMEDIATO</strong></span></p>
             <p class="resultado-cta-fila">
@@ -368,7 +380,6 @@
             </p>
             <p class="resultado-cta-nota">Sin recargos por domicilio · Pago al recibir · Efectivo · Transferencia · Datafono</p>
           </section>
-
         </section><!-- /.buscador__resultado -->
 
       </section><!-- /.buscador__col-izq -->
