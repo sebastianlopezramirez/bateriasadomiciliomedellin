@@ -117,8 +117,46 @@
   }
   </script>
 
-  <link rel="preload" href="css/styles.min.css" as="style">
-  <link rel="stylesheet" href="css/styles.min.css">
+  <!-- ============================================================
+       CRITICAL CSS — above-fold inline (elimina bloqueo 260ms FCP)
+       Contiene: variables, reset, header, hero + mobile responsive
+       El resto de estilos llega por styles.min.css async
+  ============================================================ -->
+  <style>
+:root{--bg-base:#0C1117;--bg-card:#131922;--bg-card-2:#192030;--bg-overlay:rgba(12,17,23,0.94);--border:rgba(255,255,255,0.07);--border-hover:rgba(255,209,0,0.35);--amarillo:#FFD100;--amarillo-deep:#C9A800;--amarillo-texto:#FFD100;--cyan:#00D4C8;--verde:#3EC97A;--rojo:#E05353;--texto:#E8EDF5;--texto-muted:rgba(232,237,245,0.50);--texto-dim:rgba(232,237,245,0.30);--font-head:'Fraunces',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;--max-w:1100px;--px:28px;--section-py:80px;--radius:6px;--radius-pill:999px;--shadow-card:0 16px 32px -12px rgba(0,0,0,0.55);--shadow-btn:0 8px 20px -6px rgba(255,209,0,0.40);--ease:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{margin:0;padding:0;background:var(--bg-base);color:var(--texto);font-family:var(--font-body);font-size:1rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0;color:var(--texto)}
+p{margin:0}a{color:inherit;text-decoration:none}button{font-family:var(--font-body);cursor:pointer}ul{list-style:none;margin:0;padding:0}
+.btn-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--amarillo);color:#080A0F;font-family:var(--font-body);font-size:.95rem;font-weight:700;padding:14px 28px;border-radius:var(--radius);border:none;cursor:pointer;min-height:52px;text-decoration:none;white-space:nowrap;transition:background .2s ease,box-shadow .2s ease,transform .15s ease;box-shadow:var(--shadow-btn)}
+.btn-cta--pequeño{font-size:.82rem!important;padding:10px 18px!important;min-height:40px!important;box-shadow:none!important}
+.btn-cta--hero{flex:1;justify-content:center;text-align:center;min-width:200px}
+.header{position:sticky;top:0;z-index:100;background:var(--bg-overlay);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 var(--px);height:68px}
+.logo-icono-wrap{display:block;position:relative;width:60px;height:60px;overflow:hidden;border-radius:50%;flex-shrink:0;box-shadow:0 0 14px rgba(0,212,200,.35)}
+.logo-img{position:absolute;height:58px;width:auto;top:0;left:50%;transform:translateX(-50%);display:block}
+.nav-principal{display:flex;gap:28px}
+.nav-principal a{font-size:.82rem;font-weight:600;color:var(--texto-muted);text-transform:uppercase;letter-spacing:.06em;transition:color .2s}
+.header-logo-group{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hero{padding:64px var(--px) 56px;max-width:var(--max-w);margin:0 auto;display:block}
+.hero__contenido{max-width:860px;margin:0 auto}
+.hero h1{font-size:clamp(2.2rem,5vw,3.6rem);color:var(--texto);margin-bottom:10px}
+p.hero__acento{font-family:var(--font-head);font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;color:var(--amarillo-texto);letter-spacing:-.02em;margin-bottom:0;line-height:1.1}
+.hero__banner{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:28px 0 24px}
+.hero__banner-foto{position:relative;margin:0;border-radius:var(--radius);overflow:hidden;aspect-ratio:16/9}
+.hero__banner-foto img{width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius)}
+.hero__banner-badge{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(12,17,23,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,209,0,.25);border-radius:40px;padding:6px 14px;font-size:.72rem;font-weight:600;color:var(--texto);white-space:nowrap;display:flex;align-items:center;gap:7px}
+.hero__subtitulo{margin-top:0;font-size:1rem;color:var(--texto-muted);line-height:1.7;max-width:50ch}
+.hero__ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+@keyframes pulse-cta{0%{transform:scale(1);opacity:1}60%{transform:scale(1.04);opacity:.85}100%{transform:scale(1);opacity:1}}
+nav.hero__ctas .btn-cta--hero:first-child{background:#25D366;color:#fff;animation:pulse-cta 2s ease-out infinite}
+@media(max-width:768px){:root{--section-py:48px;--px:18px}}
+@media(max-width:620px){:root{--section-py:44px;--px:16px}.header{padding:0 var(--px);flex-wrap:wrap;gap:8px;height:auto;min-height:60px;padding-top:10px;padding-bottom:10px;align-items:flex-start}.nav-principal{order:3;width:100%;gap:8px;padding:6px 0;border-top:1px solid var(--border);flex-wrap:wrap}.nav-principal a{font-size:.82rem;min-height:44px;display:flex;align-items:center;padding:0 6px}.btn-cta--pequeño{display:none}.hero{padding:36px var(--px) 28px}.hero h1{font-size:clamp(1.65rem,7vw,2.2rem)}p.hero__acento{font-size:clamp(1.15rem,5vw,1.6rem)}.hero__banner{grid-template-columns:1fr;gap:8px;margin:20px 0 18px}.hero__banner-foto{aspect-ratio:16/7}.hero__ctas{flex-direction:column;gap:10px}.btn-cta--hero{width:100%;justify-content:center;min-height:52px;font-size:1rem}}
+  </style>
+
+  <!-- styles.min.css async — no bloquea renderizado (FCP) -->
+  <link rel="preload" href="css/styles.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/styles.min.css"></noscript>
 
 </head>
 <body>
@@ -135,7 +173,7 @@
           <img src="img/logo-bateriasmedellin.webp"
                srcset="img/logo-bateriasmedellin-200.webp 200w,
                        img/logo-bateriasmedellin.webp 707w"
-               sizes="120px"
+               sizes="61px"
                alt="Baterías a Domicilio Medellín"
                class="logo-img"
                width="707" height="671"
@@ -180,8 +218,9 @@
         <figure class="hero__banner-foto">
           <img src="img/domicilio-bateria-medellin-servicio24horas.webp"
                srcset="img/domicilio-bateria-medellin-800.webp 800w,
+                       img/domicilio-bateria-medellin-1400.webp 1400w,
                        img/domicilio-bateria-medellin-servicio24horas.webp 1728w"
-               sizes="(max-width: 900px) 800px, 1728px"
+               sizes="(max-width: 900px) 850px, (max-width: 1400px) 1400px, 1728px"
                alt="Técnico instalando batería a domicilio en Medellín"
                width="1728" height="623"
                fetchpriority="high"
