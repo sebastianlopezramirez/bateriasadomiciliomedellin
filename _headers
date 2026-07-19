@@ -1,0 +1,19 @@
+/*
+  # Anti-iframe: impide que el sitio sea embebido en otro dominio
+  # (protege contra click-fraud y cloaking en Google Ads)
+  X-Frame-Options: SAMEORIGIN
+
+  # Evita que el navegador "adivine" el tipo de archivo (MIME sniffing)
+  X-Content-Type-Options: nosniff
+
+  # Controla qué información de referencia se envía al salir del sitio
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Desactiva funciones del navegador que no usamos
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+  # XSS básico para navegadores antiguos
+  X-XSS-Protection: 1; mode=block
+
+  # Fuerza HTTPS (HSTS) — activar solo cuando el dominio tenga SSL permanente
+  # Strict-Transport-Security: max-age=31536000; includeSubDomains

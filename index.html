@@ -1035,7 +1035,7 @@
       <article class="contacto__grid">
 
         <!-- form: semántico para formularios de contacto -->
-        <form class="contacto__form" action="#" method="post" novalidate>
+        <form class="contacto__form" action="#" method="post" novalidate id="form-contacto">
           <p class="form-grupo">
             <label for="c-nombre">Tu nombre</label>
             <input type="text" id="c-nombre" name="nombre" placeholder="Ej: Carlos Ramírez" required>
@@ -1051,6 +1051,11 @@
           <p class="form-grupo">
             <label for="c-carro">Marca y modelo del carro</label>
             <input type="text" id="c-carro" name="carro" placeholder="Ej: Chevrolet Spark 2019">
+          </p>
+          <!-- Honeypot: campo invisible — los bots lo llenan, los humanos no -->
+          <p class="sr-only" aria-hidden="true">
+            <label for="hp-web">Website</label>
+            <input type="text" id="hp-web" name="website" tabindex="-1" autocomplete="off" value="">
           </p>
           <button type="submit" class="btn-cta" style="width:100%">
             Solicitar batería ahora
@@ -1305,11 +1310,12 @@
     })();
   </script>
 
-  <script src="js/buscador.js" defer></script>
-  <script src="js/whatsapp.js" defer></script>
+  <script src="js/security.js" defer></script>
+  <script src="js/buscador.min.js" defer></script>
+  <script src="js/whatsapp.min.js" defer></script>
   <!-- Google Reviews — carga reseñas reales de Google Mi Negocio -->
   <!-- Configura tu API Key y Place ID en js/reviews.js → REVIEWS_CONFIG -->
-  <script src="js/reviews.js" defer></script>
+  <script src="js/reviews.min.js" defer></script>
 
   <!-- Hamburguesa: abre/cierra menú móvil -->
   <script>
