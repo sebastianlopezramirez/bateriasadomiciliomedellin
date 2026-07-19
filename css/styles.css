@@ -1898,15 +1898,16 @@
   /* ================================================================
      ANIMACIÓN PULSANTE — CTA hero llama la atención
   ================================================================ */
+  /* Animación con transform+opacity (GPU composited) — reemplaza box-shadow */
   @keyframes pulse-cta {
-    0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.6); }
-    60%  { box-shadow: 0 0 0 14px rgba(37,211,102,0); }
-    100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+    0%   { transform: scale(1);    opacity: 1; }
+    60%  { transform: scale(1.04); opacity: 0.85; }
+    100% { transform: scale(1);    opacity: 1; }
   }
   @keyframes pulse-cta-sec {
-    0%   { box-shadow: 0 0 0 0 rgba(229,57,53,0.55); }
-    60%  { box-shadow: 0 0 0 14px rgba(229,57,53,0); }
-    100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+    0%   { transform: scale(1);    opacity: 1; }
+    60%  { transform: scale(1.04); opacity: 0.85; }
+    100% { transform: scale(1);    opacity: 1; }
   }
 
   /* Botones hero: mismo tamaño, colores distintos */
@@ -2384,12 +2385,15 @@
     min-height: 0;
     overflow: hidden;
   }
-  /* Video: ocupa todo el alto disponible */
-  .col-video__bloque video {
+  /* Video o imagen: ocupa todo el alto disponible */
+  .col-video__bloque video,
+  .col-video__bloque img {
     width: 100%;
+    height: 100%;
     flex: 1;
     min-height: 0;
     object-fit: cover;
+    object-position: center;
     display: block;
   }
   /* Caption compartido */
