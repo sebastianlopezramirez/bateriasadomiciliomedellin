@@ -298,7 +298,9 @@
     document.getElementById('res-label').textContent = '✅ Referencia para tu carro:';
 
     /* ── Mensaje WhatsApp ────────────────────────────────────── */
-    var refs = Object.keys(vistas).join(', ');
+    var refs = [cats.mac, cats.gold, cats.agm, cats.coexito]
+      .filter(function(r){ return r; })
+      .join(', ');
     var btnWa = document.getElementById('btn-whatsapp-buscador');
 
     function construirMensaje() {
