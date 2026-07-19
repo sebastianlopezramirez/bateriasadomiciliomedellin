@@ -1,0 +1,71 @@
+# .htaccess — Baterías a Domicilio Medellín
+# Servidor Apache (GoDaddy cPanel)
+
+# ── Forzar HTTPS — activar cuando el dominio real esté conectado ──
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── Redirigir sin www → con www — activar con dominio real ────────
+# RewriteCond %{HTTP_HOST} ^bateriasdomiciliomedellin\.com$ [NC]
+# RewriteRule ^(.*)$ https://www.bateriasdomiciliomedellin.com/$1 [L,R=301]
+
+# ── Headers de seguridad (equivalente a _headers de Render) ──
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ── Caché del navegador (mejora PageSpeed / Quality Score) ───
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                  "access plus 1 month"
+  ExpiresByType application/javascript    "access plus 1 month"
+  ExpiresByType image/webp                "access plus 3 months"
+  ExpiresByType image/png                 "access plus 3 months"
+  ExpiresByType image/jpeg                "access plus 3 months"
+  ExpiresByType image/svg+xml             "access plus 1 month"
+  ExpiresByType video/mp4                 "access plus 6 months"
+  ExpiresByType video/webm                "access plus 6 months"
+  ExpiresByType application/json          "access plus 1 week"
+  ExpiresByType text/html                 "access plus 1 day"
+</IfModule>
+
+# ── Cache-Control explícito (refuerza mod_expires) ────────────
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=2592000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.webp$">
+    Header set Cache-Control "public, max-age=7776000"
+  </FilesMatch>
+  <FilesMatch "\.mp4$">
+    Header set Cache-Control "public, max-age=15552000"
+  </FilesMatch>
+  <FilesMatch "\.json$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
+
+# ── Compresión GZIP (archivos más livianos = carga más rápida) ─
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
+  AddOutputFilterByType DEFLATE image/svg+xml text/xml application/json
+  AddOutputFilterByType DEFLATE text/plain text/javascript
+</IfModule>
+
+# ── Proteger archivos sensibles ───────────────────────────────
+<FilesMatch "^(\.git|\.env|robots\.txt)$">
+  # robots.txt sí debe ser accesible
+</FilesMatch>
+<FilesMatch "\.(json|md|log|sh|py)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ── Página de error personalizada (opcional) ──────────────────
+ErrorDocument 404 /index.html
