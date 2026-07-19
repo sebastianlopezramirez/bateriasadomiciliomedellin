@@ -1,0 +1,33 @@
+name: Deploy a GoDaddy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Subir a GoDaddy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          local-dir: ./
+          server-dir: public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/vault-bateriasadomiciliomedellin/**
+            **/node_modules/**
+            js/buscador.js
+            js/whatsapp.js
+            css/styles.css
+            **/*.md
