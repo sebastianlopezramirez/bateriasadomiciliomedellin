@@ -31,3 +31,4 @@ jobs:
             js/whatsapp.js
             css/styles.css
             **/*.md
+            **/*.bak
