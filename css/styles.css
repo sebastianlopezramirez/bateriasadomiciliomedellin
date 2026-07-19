@@ -1483,18 +1483,20 @@
   .marcas-logos {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
     list-style: none;
     padding: 0;
     margin: 0;
+    align-items: center;
   }
-  .marca-logo {
+  .marcas-logos .marca-logo {
     font-family: var(--font-head);
-    font-size: 1.1rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--amarillo-texto);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
 
   /* ================================================================
@@ -2065,25 +2067,53 @@
   /* ================================================================
      RESPONSIVE TABLET (max-width: 900px)
   ================================================================ */
+  /* ================================================================
+     RESPONSIVE TABLET GRANDE (max-width: 900px)
+  ================================================================ */
   @media (max-width: 900px) {
     :root { --section-py: 56px; --px: 20px; }
+
+    /* Header */
     .header { padding: 0 var(--px); gap: 12px; }
     .nav-principal { display: flex; gap: 14px; flex-wrap: wrap; }
-    .nav-principal a { font-size: 0.75rem; }
+    .nav-principal a { font-size: 0.8rem; min-height: 44px; display: flex; align-items: center; }
     .nav-hamburguesa { display: none; }
+
+    /* Hero */
     .hero { padding: 48px var(--px) 40px; }
     .hero__contenido { max-width: 100%; }
+
+    /* Layouts de sección: colapsar a 1 columna */
     ul.propuesta__pilares { grid-template-columns: 1fr; }
-    .buscador__grid { grid-template-columns: 1fr; }
-    .buscador__col-der { display: none; }
-    .cobertura__grid { grid-template-columns: 1fr; }
-    .testimonios__grid { grid-template-columns: 1fr; }
-    .col-video { margin-top: 0; }
-    .contacto__grid { grid-template-columns: 1fr; }
-    .footer__grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-    .ventaja__tabla th, .ventaja__tabla td { padding: 12px 14px; font-size: 0.82rem; }
-    /* Fix: confianza grid 4col → 2col en tablet */
-    .confianza__grid { grid-template-columns: repeat(2, 1fr); }
+    .buscador__grid      { grid-template-columns: 1fr; }
+    .buscador__col-der   { display: none; }
+    .cobertura__grid     { grid-template-columns: 1fr; }
+    .testimonios__grid   { grid-template-columns: 1fr; }
+    .col-video           { margin-top: 0; }
+    .contacto__grid      { grid-template-columns: 1fr; }
+    .footer__grid        { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .confianza__grid     { grid-template-columns: repeat(2, 1fr); }
+
+    /* Tabla */
+    .ventaja__tabla th,
+    .ventaja__tabla td { padding: 12px 14px; font-size: 0.85rem; }
+  }
+
+  /* ================================================================
+     RESPONSIVE TABLET PEQUEÑA (max-width: 768px)
+  ================================================================ */
+  @media (max-width: 768px) {
+    :root { --section-py: 48px; --px: 18px; }
+
+    /* Buscador: card resultado padding reducido */
+    .resultado-card      { padding: 16px 18px; }
+    .resultado-cta-bloque { padding: 16px 18px; }
+
+    /* Referencia destacada: font más pequeño */
+    .ref-destacada { font-size: 1.3rem; padding: 5px 16px; }
+
+    /* Logos de marca ligeramente más pequeños */
+    .marca-logo { width: 64px; height: 40px; }
   }
 
   /* ================================================================
@@ -2091,33 +2121,67 @@
   ================================================================ */
   @media (max-width: 620px) {
     :root { --section-py: 44px; --px: 16px; }
-    .header { padding: 0 var(--px); flex-wrap: wrap; gap: 8px; }
-    .nav-principal { order: 3; width: 100%; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border); }
-    .nav-principal a { font-size: 0.7rem; }
-    /* BUG FIX #2: clase correcta con ñ para ocultar botón header en móvil */
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .header {
+      padding: 0 var(--px);
+      flex-wrap: wrap;
+      gap: 8px;
+      height: auto;
+      min-height: 60px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      align-items: flex-start;
+    }
+    .nav-principal {
+      order: 3;
+      width: 100%;
+      gap: 8px;
+      padding: 6px 0;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .nav-principal a {
+      font-size: 0.82rem;  /* mínimo legible Google: ≥12px; aquí ~13px */
+      min-height: 44px;    /* tap target Google Ads: ≥44px */
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+    }
     .btn-cta--pequeño { display: none; }
-    /* BUG FIX #1: header altura auto para que la nav no quede recortada */
-    .header { height: auto; min-height: 64px; padding-top: 10px; padding-bottom: 10px; align-items: flex-start; }
+
+    /* ── Hero ────────────────────────────────────────────────── */
     .hero { padding: 36px var(--px) 28px; }
-    .hero h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
-    p.hero__acento { font-size: clamp(1.2rem, 5vw, 1.8rem); }
-    .hero__subtitulo { font-size: 0.92rem; }
+    .hero h1 { font-size: clamp(1.65rem, 7vw, 2.2rem); }
+    p.hero__acento { font-size: clamp(1.15rem, 5vw, 1.6rem); }
+    .hero__subtitulo { font-size: 0.95rem; line-height: 1.6; }
     .hero__banner { grid-template-columns: 1fr; gap: 8px; margin: 20px 0 18px; }
     .hero__banner-foto { aspect-ratio: 16 / 7; }
-    .hero__banner-badge { font-size: 0.68rem; padding: 5px 10px; }
-    .hero__ctas { flex-direction: column; }
-    .btn-cta--hero { width: 100%; }
+    .hero__banner-badge { font-size: 0.72rem; padding: 5px 10px; }
+    .hero__ctas { flex-direction: column; gap: 10px; }
+    .btn-cta--hero { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
     .hero__social-proof { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+    /* ── Pilares / propuesta ─────────────────────────────────── */
     ul.propuesta__pilares { grid-template-columns: 1fr; }
+
+    /* ── Cobertura ───────────────────────────────────────────── */
     .cobertura__grid { grid-template-columns: 1fr; }
     .cobertura__lista { columns: 2; }
+
+    /* ── Servicios ───────────────────────────────────────────── */
     .servicios__grid { gap: 8px; }
-    /* Cabecera: en móvil muy pequeño el botón puede bajar */
     .servicio-card__cabecera { flex-wrap: wrap; }
-    .servicio-card h3 { font-size: 0.88rem; flex-basis: calc(100% - 48px); }
-    .btn-cta--servicio { font-size: 0.75rem; padding: 7px 12px; min-height: 34px; margin-left: calc(36px + 12px); }
+    .servicio-card h3 { font-size: 0.9rem; flex-basis: calc(100% - 52px); }
+    .btn-cta--servicio {
+      font-size: 0.8rem;
+      padding: 10px 14px;
+      min-height: 44px;   /* tap target */
+      margin-left: calc(36px + 12px);
+    }
     .servicio-card__cuerpo { padding-left: 0; }
-    /* Tabla: rompe el doble padding (sección + contenedor) para ir de esquina a esquina */
+
+    /* ── Tabla comparativa ───────────────────────────────────── */
     .ventaja__tabla-wrap {
       margin-left: calc(-2 * var(--px));
       margin-right: calc(-2 * var(--px));
@@ -2125,36 +2189,112 @@
       border-left: none;
       border-right: none;
       font-size: 0.82rem;
+      overflow-x: auto;   /* scroll horizontal en móvil */
+      -webkit-overflow-scrolling: touch;
     }
-    .ventaja__tabla th, .ventaja__tabla td { padding: 11px 14px; }
-    /* Primera columna: permite wrap para no forzar ancho */
+    .ventaja__tabla th,
+    .ventaja__tabla td { padding: 11px 12px; white-space: nowrap; }
     .ventaja__tabla td:first-child { white-space: normal; font-size: 0.82rem; }
     th.col-otros, td.col-otros { display: none; }
+
+    /* ── Buscador ────────────────────────────────────────────── */
+    .select-grupo select {
+      font-size: 1rem;       /* ≥16px previene auto-zoom en iOS */
+      min-height: 52px;      /* tap target cómodo */
+      padding: 14px 16px;
+    }
+    .btn-buscar-bateria {
+      min-height: 56px;
+      font-size: 1.05rem;
+    }
+    .ejemplo-chip {
+      font-size: 0.82rem;
+      padding: 10px 16px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Resultado — card ────────────────────────────────────── */
+    .resultado-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 16px;
+    }
+    .resultado-info { width: 100%; }
+    .resultado-label { font-size: 0.8rem; }
+    .resultado-starstop { font-size: 0.78rem; padding: 4px 12px; }
+    .resultado-garantia { font-size: 0.75rem; line-height: 1.5; }
+
+    /* ── Logos de marca ──────────────────────────────────────── */
+    .marcas-fila { gap: 7px; }
+    .marca-logo { width: 58px; height: 36px; border-radius: 8px; }
+
+    /* ── Referencia destacada ────────────────────────────────── */
+    .ref-destacada {
+      font-size: 1.2rem;
+      padding: 5px 14px;
+      border-radius: 8px;
+    }
+
+    /* ── Resultado — CTA ─────────────────────────────────────── */
+    .resultado-cta-bloque { padding: 14px 16px; }
+    .resultado-cta-titulo { font-size: 0.88rem; }
+    .resultado-cta-urgencia { display: block; margin-top: 4px; font-size: 0.78rem; }
+    .resultado-cta-fila { flex-direction: column; gap: 10px; }
+    .resultado-dir-input {
+      width: 100%;
+      font-size: 1rem;    /* ≥16px: evita auto-zoom iOS → crítico para Google Ads */
+      min-height: 52px;
+      padding: 14px 16px;
+    }
+    .btn-cta--domicilio {
+      width: 100%;
+      justify-content: center;
+      min-height: 56px;
+      font-size: 1.05rem;
+    }
+    .resultado-cta-nota { font-size: 0.75rem; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
     .footer__grid { grid-template-columns: 1fr; }
     .confianza__grid { grid-template-columns: 1fr 1fr; }
+
+    /* ── FAQ ─────────────────────────────────────────────────── */
     .faq__lista { gap: 8px; }
-    /* Buscador form — ya es flex-column, nada extra */
-    /* Resultado CTA — apila dirección y botón en móvil */
-    .resultado-cta-fila { flex-direction: column; }
-    .btn-cta--domicilio { width: 100%; justify-content: center; }
-    /* resultado-card apilado */
-    .resultado-card { flex-direction: column; align-items: flex-start; gap: 12px; }
-    /* Logos de marca — ligeramente más pequeños en móvil */
-    .marca-logo { width: 60px; height: 37px; }
   }
 
   /* ================================================================
      RESPONSIVE EXTRA PEQUEÑO (max-width: 380px)
+     Cubre iPhone SE, Galaxy A03, pantallas de 320-380px
   ================================================================ */
   @media (max-width: 380px) {
+    :root { --px: 14px; }
+
     .hero__banner { display: none; }
     .cobertura__lista { columns: 1; }
     .pilar__numero { font-size: 1.4rem; }
     .confianza__grid { grid-template-columns: 1fr; }
-    /* Logos aún más compactos en pantallas muy pequeñas */
-    .marcas-fila { gap: 6px; }
+
+    /* Hero más compacto */
+    .hero h1 { font-size: clamp(1.45rem, 8.5vw, 1.9rem); }
+    .btn-cta--hero { font-size: 0.95rem; padding: 14px 20px; }
+
+    /* Logos caben en 320px: 4 × 52px + 3 × 5px = 223px ✅ */
+    .marcas-fila { gap: 5px; }
     .marca-logo { width: 52px; height: 32px; border-radius: 7px; }
-    .marca-ref { font-size: 0.55rem; }
+
+    /* Referencia: caben códigos largos */
+    .ref-destacada { font-size: 1rem; padding: 4px 12px; word-break: break-all; }
+
+    /* Nav: wrap en pantalla muy estrecha */
+    .nav-principal { gap: 4px; }
+    .nav-principal a { font-size: 0.78rem; }
+
+    /* Card resultado sin padding excesivo */
+    .resultado-card { padding: 12px 14px; }
+    .resultado-cta-bloque { padding: 12px 14px; }
   }
 
   /* ================================================================
