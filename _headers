@@ -15,5 +15,5 @@
   # XSS básico para navegadores antiguos
   X-XSS-Protection: 1; mode=block
 
-  # Fuerza HTTPS (HSTS) — activar solo cuando el dominio tenga SSL permanente
-  # Strict-Transport-Security: max-age=31536000; includeSubDomains
+  # Fuerza HTTPS (HSTS) — activo desde 2026-07-27
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
