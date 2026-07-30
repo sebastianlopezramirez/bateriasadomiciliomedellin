@@ -21,6 +21,7 @@
     'bateriasdomiciliomedellin.com',
     'www.bateriasdomiciliomedellin.com',
     'bateriasadomiciliomedellin.onrender.com',
+    'j1g.5b8.mytemp.website',
     'localhost',
     '127.0.0.1'
   ];
