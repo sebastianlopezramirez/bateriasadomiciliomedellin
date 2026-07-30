@@ -1173,6 +1173,40 @@
     font-weight: 700;
   }
 
+  /* ── LAYOUT: foto izquierda, contenido derecha ── */
+  .servicio-card {
+    flex-direction: row;
+    padding: 0;
+    overflow: hidden;
+  }
+  .servicio-card__foto {
+    width: 110px;
+    min-width: 110px;
+    align-self: stretch;
+    overflow: hidden;
+    border-radius: var(--radius) 0 0 var(--radius);
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .servicio-card__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s var(--ease);
+  }
+  .servicio-card:hover .servicio-card__foto img {
+    transform: scale(1.06);
+  }
+  .servicio-card__contenido {
+    flex: 1;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
   /* Variante urgente — desvare: rojo para comunicar emergencia */
   .btn-cta--urgente {
     background: var(--rojo) !important;
